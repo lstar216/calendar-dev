@@ -118,4 +118,10 @@ public class JdbcEventDao implements EventDao {
 		Timestamp timestamp = new Timestamp(event.getWhen().getTimeInMillis());
 		this.jdbcTemplate.update(sql_query, new Object[] {timestamp, event.getSummary(), event.getDescription(), event.getOwner().getId(), event.getNumLikes(), event.getEventLevel().intValue(), event.getId()});
 	}
+	
+	@Override
+	public void deleteEvent(int eventId) {
+		String sql = "delete from events where id = ?";
+		this.jdbcTemplate.update(sql, new Object[] {eventId});
+	}
 }

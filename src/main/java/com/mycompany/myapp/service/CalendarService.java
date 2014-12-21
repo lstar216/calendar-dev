@@ -15,10 +15,16 @@ public interface CalendarService {
     public CalendarUser getUserByEmail(String email);
 
     public List<CalendarUser> getUsersByEmail(String partialEmail);
+    
+    public CalendarUser findUserByUserId(String userId);
 
     public int createUser(CalendarUser user);
     
     public void deleteAllUsers();
+    
+    public void updateCalendarUser(CalendarUser calendarUser);
+    
+ 
     
     /* Event */
     public Event getEvent(int eventId);
@@ -31,6 +37,10 @@ public interface CalendarService {
     
     public void deleteAllEvents();
     
+    public void deleteEvent(int eventId);
+    
+    public void udpateEvent(Event event);
+    
     /* EventAttendee */
     public List<EventAttendee> getEventAttendeeByEventId(int eventId);
     
@@ -41,6 +51,10 @@ public interface CalendarService {
     public void deleteEventAttendee(int id);
     
     public void deleteAllEventAttendees();
+    
+    public List<CalendarUser> getEventUserByEventId(int eventId);
+
+    public void deleteEventAttendeeByEventId(int eventId);
     
 	/* upgradeEventLevels */
 	public void upgradeEventLevels() throws Exception;

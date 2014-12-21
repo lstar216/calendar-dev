@@ -1,6 +1,6 @@
 CREATE DATABASE  IF NOT EXISTS `calendar` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `calendar`;
--- MySQL dump 10.13  Distrib 5.6.17, for Win32 (x86)
+-- MySQL dump 10.13  Distrib 5.6.13, for osx10.6 (i386)
 --
 -- Host: 127.0.0.1    Database: calendar
 -- ------------------------------------------------------
@@ -26,14 +26,11 @@ DROP TABLE IF EXISTS `calendar_users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `calendar_users` (
   `id` int(32) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `level` tinyint(4) NOT NULL,
-  `login` int(11) NOT NULL,
-  `recommend` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -43,7 +40,7 @@ CREATE TABLE `calendar_users` (
 
 LOCK TABLES `calendar_users` WRITE;
 /*!40000 ALTER TABLE `calendar_users` DISABLE KEYS */;
-INSERT INTO `calendar_users` VALUES (0,'Admin','admin@example.com','admin','Admin',1,0,0),(1,'user1','user1@example.com','user1','User1',1,0,0),(2,'user2','user2@example.com','user2','User2',1,0,0),(3,'user3','user3@example.com','user3','User3',1,0,0),(4,'user4','user4@example.com','user4','User4',1,0,0),(5,'user5','user5@example.com','user5','User5',1,0,0),(6,'user6','user6@example.com','user6','User6',1,0,0),(7,'user7','user7@example.com','user7','User7',1,0,0),(8,'user8','user8@example.com','user8','User8',1,0,0),(9,'user9','user9@example.com','user9','User9',1,0,0),(10,'user10','user10@example.com','user10','User10',1,0,0),(11,'user11','user11@example.com','user11','User11',1,0,0);
+INSERT INTO `calendar_users` VALUES (0,'admin@example.com','admin','Admin'),(1,'user1@example.com','user1','User1'),(2,'user2@example.com','user2','User2'),(3,'user3@example.com','user3','User3'),(4,'user4@example.com','user4','User4'),(5,'user5@example.com','user5','User5'),(6,'user6@example.com','user6','User6'),(7,'user7@example.com','user7','User7'),(8,'user8@example.com','user8','User8'),(9,'user9@example.com','user9','User9'),(10,'user10@example.com','user10','User10'),(11,'user11@example.com','user11','User11');
 /*!40000 ALTER TABLE `calendar_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -116,10 +113,12 @@ DROP TABLE IF EXISTS `user_roles`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_roles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
   `role` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uni_username_role` (`role`,`user_id`)
+  UNIQUE KEY `uni_username_role` (`role`,`email`),
+  KEY `fk_users_email` (`email`),
+  CONSTRAINT `constraints_users_email` FOREIGN KEY (`email`) REFERENCES `calendar_users` (`email`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -129,7 +128,7 @@ CREATE TABLE `user_roles` (
 
 LOCK TABLES `user_roles` WRITE;
 /*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
-INSERT INTO `user_roles` VALUES (0,'admin','ROLE_ADMIN'),(1,'user1','ROLE_USER'),(10,'user10','ROLE_USER'),(11,'user11','ROLE_USER'),(2,'user2','ROLE_USER'),(3,'user3','ROLE_USER'),(4,'user4','ROLE_USER'),(5,'user5','ROLE_USER'),(6,'user6','ROLE_USER'),(7,'user7','ROLE_USER'),(8,'user8','ROLE_USER'),(9,'user9','ROLE_USER');
+INSERT INTO `user_roles` VALUES (0,'admin@example.com','ROLE_ADMIN'),(10,'user10@example.com','ROLE_USER'),(11,'user11@example.com','ROLE_USER'),(1,'user1@example.com','ROLE_USER'),(2,'user2@example.com','ROLE_USER'),(3,'user3@example.com','ROLE_USER'),(4,'user4@example.com','ROLE_USER'),(5,'user5@example.com','ROLE_USER'),(6,'user6@example.com','ROLE_USER'),(7,'user7@example.com','ROLE_USER'),(8,'user8@example.com','ROLE_USER'),(9,'user9@example.com','ROLE_USER');
 /*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -142,4 +141,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-12-21 20:32:14
+-- Dump completed on 2014-11-27 10:37:50

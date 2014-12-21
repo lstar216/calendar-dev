@@ -17,6 +17,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import com.mycompany.myapp.domain.CalendarUser;
 import com.mycompany.myapp.domain.EventAttendee;
 
 @Repository("eventAttendeeDao")
@@ -24,6 +25,8 @@ public class JdbcEventAttendeeDao implements EventAttendeeDao {
 	private JdbcTemplate jdbcTemplate;
 
 	private RowMapper<EventAttendee> rowMapper;
+	
+	private RowMapper<CalendarUser> userRowMapper;
 
 	@Autowired
 	private EventDao eventDao;
@@ -43,6 +46,13 @@ public class JdbcEventAttendeeDao implements EventAttendeeDao {
 				eventAttendeeList.setAttendee(calendarUserDao.findUser(rs.getInt("attendee")));
 				
 				return eventAttendeeList;
+			}
+		};
+		
+		userRowMapper = new RowMapper<CalendarUser>() {
+			public CalendarUser mapRow(ResultSet rs, int rowNum) throws SQLException {
+				CalendarUser calendarUser = calendarUserDao.findUser(rs.getInt("attendee"));
+				return calendarUser;
 			}
 		};
 	}
@@ -99,4 +109,18 @@ public class JdbcEventAttendeeDao implements EventAttendeeDao {
 		String sql_query = "delete from events_attendees";
 		this.jdbcTemplate.update(sql_query);
 	}
+	
+	@Override
+	public List<CalendarUser> findEventRealUserByEventId(int eventId) {
+		String sql_query = "select * from events_attendees where event_id = ?";
+		return this.jdbcTemplate.query(sql_query, new Object[] {eventId}, userRowMapper);
+	}
+	//EventID만으로 EventAttendee가 아니라 실제 CalendarUser를 찾을 수 있도록 한다.
+	
+	@Override
+	public void deleteEventAttendeeByEventId(int eventId) {
+		String sql_query = "delete from events_attendees where event_id = ?";
+		this.jdbcTemplate.update(sql_query, new Object[] {eventId});
+	}
+	//어떤 이벤트를 참석한 참석자들을 모두 지운다. 이벤트를 없앴을 때 참여한 사람은 모두 지워져야함
 }

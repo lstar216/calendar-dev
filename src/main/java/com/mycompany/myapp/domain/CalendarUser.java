@@ -1,10 +1,46 @@
 package com.mycompany.myapp.domain;
 
 public class CalendarUser {
-    private Integer id;
+    private Integer id;			//자동 할당되는 번호
+    private String user_id;		//자동으로 할당되는 숫자가 아니라 유저가 직접 입력할수 있는 정보
     private String email;
     private String password;
     private String name;
+    private Integer level;
+	private Integer login;
+    private Integer recommend;
+    
+    public String getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
+	}
+	
+    public Integer getLevel() {
+		return level;
+	}
+
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+
+	public Integer getLogin() {
+		return login;
+	}
+
+	public void setLogin(Integer login) {
+		this.login = login;
+	}
+
+	public Integer getRecommend() {
+		return recommend;
+	}
+
+	public void setRecommend(Integer recommend) {
+		this.recommend = recommend;
+	}
 
     public Integer getId() {
         return id;

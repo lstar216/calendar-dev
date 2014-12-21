@@ -9,6 +9,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import com.mycompany.myapp.dao.UserRoleDao;
+import com.mycompany.myapp.domain.UserRole;
 import com.mycompany.myapp.dao.CalendarUserDao;
 import com.mycompany.myapp.dao.EventAttendeeDao;
 import com.mycompany.myapp.dao.EventDao;
@@ -32,6 +34,9 @@ public class DefaultCalendarService implements CalendarService {
 	@Autowired
 	private EventAttendeeDao eventAttendeeDao;
 
+	@Autowired
+	private UserRoleDao userRoleDao;
+	
 	public void setEventDao(EventDao eventDao) {
 		this.eventDao = eventDao;
 	}
@@ -54,6 +59,8 @@ public class DefaultCalendarService implements CalendarService {
 
 	@Override
 	public int createUser(CalendarUser user) {
+		UserRole userRole = new UserRole(user.getUser_id(), "ROLE_USER");
+		this.userRoleDao.add(userRole);
 		return userDao.createUser(user);
 	}
 
@@ -61,6 +68,17 @@ public class DefaultCalendarService implements CalendarService {
 	public void deleteAllUsers() {
 		userDao.deleteAll();
 	}
+	
+	@Override
+	public CalendarUser findUserByUserId(String userId) {
+		return userDao.findUserByUserId(userId);
+	}
+	
+	@Override
+	public void updateCalendarUser(CalendarUser calendarUser) {
+		userDao.updateCalendarUser(calendarUser);
+	}
+
 
 
 
@@ -93,6 +111,17 @@ public class DefaultCalendarService implements CalendarService {
 	public void deleteAllEvents() {
 		eventDao.deleteAll();
 	}
+	
+	@Override
+	public void deleteEvent(int eventId) {
+		// TODO Auto-generated method stub
+		eventDao.deleteEvent(eventId);
+	}
+	
+	@Override
+	public void udpateEvent(Event event) {
+		eventDao.udpateEvent(event);
+	}
 
 	/* EventAttendee */
 	@Override
@@ -119,7 +148,16 @@ public class DefaultCalendarService implements CalendarService {
 	public void deleteAllEventAttendees() {
 		eventAttendeeDao.deleteAll();
 	}
+	
+	@Override
+	public List<CalendarUser> getEventUserByEventId(int eventId) {
+		return eventAttendeeDao.findEventRealUserByEventId(eventId);
+	}
 
+	@Override
+	public void deleteEventAttendeeByEventId(int eventId) {
+		eventAttendeeDao.deleteEventAttendeeByEventId(eventId);
+	}
 
 
 	/* upgradeEventLevels */

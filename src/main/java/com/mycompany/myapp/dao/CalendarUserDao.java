@@ -9,6 +9,8 @@ public interface CalendarUserDao {
 
     public CalendarUser findUserByEmail(String email);
 
+    public CalendarUser findUserByUserId(String userId);
+    
     public List<CalendarUser> findUsersByEmail(String partialEmail);
 
     public int createUser(CalendarUser user);
@@ -16,4 +18,6 @@ public interface CalendarUserDao {
     public List<CalendarUser> findAllusers();
     
     public void deleteAll();
+    
+    public void updateCalendarUser(CalendarUser calendarUser);
 }

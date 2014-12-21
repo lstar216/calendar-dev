@@ -31,10 +31,13 @@ public class JdbcCalendarUserDao implements CalendarUserDao {
 			public CalendarUser mapRow(ResultSet rs, int rowNum) throws SQLException {
 				CalendarUser calendarUser = new CalendarUser();
 				calendarUser.setId(rs.getInt("id"));
-				calendarUser.setEmail(rs.getString("email"));
-				calendarUser.setPassword(rs.getString("password"));
+				calendarUser.setUser_id(rs.getString("user_id"));
 				calendarUser.setName(rs.getString("name"));
-
+				calendarUser.setPassword(rs.getString("password"));
+				calendarUser.setEmail(rs.getString("email"));
+				calendarUser.setLevel(rs.getInt("level"));
+				calendarUser.setLogin(rs.getInt("login"));
+				calendarUser.setRecommend(rs.getInt("recommend"));
 				return calendarUser;
 			}
 		};
@@ -75,11 +78,19 @@ public class JdbcCalendarUserDao implements CalendarUserDao {
 
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
-			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-				PreparedStatement ps = connection.prepareStatement("insert into calendar_users(email, password, name) values(?,?,?)", Statement.RETURN_GENERATED_KEYS);
-				ps.setString(1, userToAdd.getEmail());
-				ps.setString(2, userToAdd.getPassword());
-				ps.setString(3, userToAdd.getName());
+			public PreparedStatement createPreparedStatement(
+					Connection connection) throws SQLException {
+				PreparedStatement ps = connection
+						.prepareStatement(
+								"insert into calendar_users(user_id, name, password, email, level, login, recommend) values(?,?,?,?,?,?,?)",
+								Statement.RETURN_GENERATED_KEYS);
+				ps.setString(1, userToAdd.getUser_id());
+				ps.setString(2, userToAdd.getName());
+				ps.setString(3, userToAdd.getPassword());
+				ps.setString(4, userToAdd.getEmail());
+				ps.setInt(5, userToAdd.getLevel());
+				ps.setInt(6, userToAdd.getLogin());
+				ps.setInt(7, userToAdd.getRecommend());
 
 				return ps;
 			}
@@ -99,4 +110,18 @@ public class JdbcCalendarUserDao implements CalendarUserDao {
 		String sql = "delete from calendar_users";
 		this.jdbcTemplate.update(sql);
 	}
+	
+	@Override
+	public CalendarUser findUserByUserId(String userId) {
+		String sql_query = "select * from calendar_users where user_id = ?";
+		return this.jdbcTemplate.queryForObject(sql_query,
+				new Object[] { userId }, rowMapper);
+	}
+	//새롭게 추가된 user_id로 CalendarUser를 찾아주는 함수
+	@Override
+	public void updateCalendarUser(CalendarUser calendarUser) {
+		// TODO Auto-generated method stub
+		String sql_query = "update calendar_users set name = ?, password = ?, email = ? where id = ?";
+		this.jdbcTemplate.update(sql_query, new Object[] {calendarUser.getName(), calendarUser.getPassword(), calendarUser.getEmail(), calendarUser.getId()});
+	}	//정보를 수정했을때 디비에 정보를 갱신한다
 }
